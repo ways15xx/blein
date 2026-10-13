@@ -14,7 +14,6 @@
     --term-bg:#020402;
     --green:#39ff6a;
     --green-dim:#1c8a3a;
-    --green-faint:rgba(57,255,106,0.08);
     --glow:0 0 6px rgba(57,255,106,0.55);
   }
   *{box-sizing:border-box;}
@@ -103,29 +102,31 @@
     border-radius:8px;
     -webkit-tap-highlight-color:transparent;
   }
-  .hot.lit,
   .hot:focus-visible{
     outline:2px solid rgba(57,255,106,0.6);
     outline-offset:2px;
-    background:var(--green-faint);
   }
 
   /* ---------- terminal ---------- */
   .term{
-    width:min(680px, calc(100vw - 32px));
-    max-height:calc(100dvh - 32px);
-    padding:0;
-    border:1px solid var(--green-dim);
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    max-width:none;
+    max-height:none;
+    margin:0;
+    padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+    border:0;
     background:var(--term-bg);
     color:var(--green);
     font-family:'VT323', ui-monospace, 'Courier New', monospace;
-    font-size:clamp(19px, 2.3vw, 23px);
+    font-size:clamp(20px, 2.1vw, 30px);
     line-height:1.25;
     text-shadow:var(--glow);
-    box-shadow:0 0 0 1px #07240f, 0 0 48px rgba(57,255,106,0.16);
     overflow:hidden;
   }
-  .term::backdrop{background:rgba(0,0,0,0.65);}
+  .term::backdrop{background:var(--term-bg);}
   .term[open]{display:flex;flex-direction:column;}
   .term::after{
     content:"";
@@ -140,7 +141,7 @@
     align-items:center;
     justify-content:space-between;
     gap:12px;
-    padding:6px 14px;
+    padding:8px clamp(16px, 3vw, 40px);
     border-bottom:1px solid var(--green-dim);
   }
   .term-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -155,7 +156,8 @@
   }
 
   .term-body{
-    padding:14px 18px 18px;
+    flex:1;
+    padding:clamp(16px, 3vw, 40px);
     overflow-y:auto;
   }
   .out{
@@ -474,17 +476,10 @@
   });
 
   document.getElementById('term-x').addEventListener('click', () => term.close());
-  // a click on the dialog element itself (not its contents) is a backdrop click
-  term.addEventListener('click', e => { if(e.target === term) term.close(); });
   term.addEventListener('close', () => { stopTyping(); current = null; });
 
-  // light up every hit area of the same product together
   document.querySelectorAll('.hot').forEach(btn => {
-    const id = btn.dataset.product;
-    const group = document.querySelectorAll('.hot[data-product="' + id + '"]');
-    btn.addEventListener('click', () => open(id));
-    btn.addEventListener('pointerenter', () => group.forEach(b => b.classList.add('lit')));
-    btn.addEventListener('pointerleave', () => group.forEach(b => b.classList.remove('lit')));
+    btn.addEventListener('click', () => open(btn.dataset.product));
   });
 </script>
 
