@@ -33,12 +33,12 @@
     position:fixed;
     left:50%;
     top:50%;
-    width:max(100vw, calc(100vh * 16 / 9));
+    --pw:max(100vw, calc(100vh * 16 / 9));
+    --pw:max(100vw, calc(100dvh * 16 / 9));
+    width:var(--pw);
     height:max(100vh, calc(100vw * 9 / 16));
-    width:max(100vw, calc(100dvh * 16 / 9));
     height:max(100dvh, calc(100vw * 9 / 16));
     transform:translate(-50%, -50%);
-    perspective:1400px;
   }
   .poster img{
     position:absolute;
@@ -49,16 +49,19 @@
   }
 
   /* product layers snap between turned angles instead of easing smoothly,
-     like a display turntable indexing between fixed positions */
+     like a display turntable indexing between fixed positions. perspective()
+     puts the vanishing point at each product's own transform-origin, so they
+     turn in place instead of drifting toward the canvas center, and it scales
+     with the canvas width so the turn looks the same at any screen size. */
   .spin-hoodie{transform-origin:28.3% 50.3%;animation:turn-snap 4s infinite;}
   .spin-shirt{transform-origin:46.9% 52.3%;animation:turn-snap 4s infinite;animation-delay:-1.3s;}
   .spin-rings{transform-origin:70.9% 45%;animation:turn-snap 4s infinite;animation-delay:-2.6s;}
   @keyframes turn-snap{
-    0%{transform:rotateY(0deg);animation-timing-function:steps(1);}
-    25%{transform:rotateY(-14deg);animation-timing-function:steps(1);}
-    50%{transform:rotateY(0deg);animation-timing-function:steps(1);}
-    75%{transform:rotateY(14deg);animation-timing-function:steps(1);}
-    100%{transform:rotateY(0deg);}
+    0%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(0deg);animation-timing-function:steps(1);}
+    25%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(-14deg);animation-timing-function:steps(1);}
+    50%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(0deg);animation-timing-function:steps(1);}
+    75%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(14deg);animation-timing-function:steps(1);}
+    100%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(0deg);}
   }
   @media (prefers-reduced-motion: reduce){
     .spin-hoodie, .spin-shirt, .spin-rings{animation:none;}
