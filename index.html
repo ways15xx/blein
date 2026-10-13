@@ -5,11 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Blein</title>
 <meta name="description" content="Blein — drop 01. Hoodies, shirts, rings and lube.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
 <style>
   :root{
     --bg:#050506;
+    --term-bg:#020402;
+    --green:#39ff6a;
+    --green-dim:#1c8a3a;
+    --green-faint:rgba(57,255,106,0.08);
+    --glow:0 0 6px rgba(57,255,106,0.55);
   }
   *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
   html,body{
     margin:0;
     height:100%;
@@ -82,11 +91,160 @@
     .tag-b{transform:translateX(40%);}
   }
 
+  /* clickable product areas, positioned in % of the 1920x1080 canvas from
+     each product layer's pixel bounds */
+  .hot{
+    position:absolute;
+    padding:0;
+    margin:0;
+    border:0;
+    background:transparent;
+    cursor:pointer;
+    border-radius:8px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .hot.lit,
+  .hot:focus-visible{
+    outline:2px solid rgba(57,255,106,0.6);
+    outline-offset:2px;
+    background:var(--green-faint);
+  }
+
+  /* ---------- terminal ---------- */
+  .term{
+    width:min(680px, calc(100vw - 32px));
+    max-height:calc(100dvh - 32px);
+    padding:0;
+    border:1px solid var(--green-dim);
+    background:var(--term-bg);
+    color:var(--green);
+    font-family:'VT323', ui-monospace, 'Courier New', monospace;
+    font-size:clamp(19px, 2.3vw, 23px);
+    line-height:1.25;
+    text-shadow:var(--glow);
+    box-shadow:0 0 0 1px #07240f, 0 0 48px rgba(57,255,106,0.16);
+    overflow:hidden;
+  }
+  .term::backdrop{background:rgba(0,0,0,0.65);}
+  .term[open]{display:flex;flex-direction:column;}
+  .term::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,0.22) 2px 3px);
+  }
+
+  .term-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:6px 14px;
+    border-bottom:1px solid var(--green-dim);
+  }
+  .term-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .term-x{
+    font:inherit;
+    color:inherit;
+    text-shadow:inherit;
+    background:none;
+    border:0;
+    padding:2px 4px;
+    cursor:pointer;
+  }
+
+  .term-body{
+    padding:14px 18px 18px;
+    overflow-y:auto;
+  }
+  .out{
+    margin:0;
+    font:inherit;
+    white-space:pre-wrap;
+    word-break:break-word;
+    min-height:8lh;
+  }
+  .cursor{
+    display:inline-block;
+    width:0.55em;
+    height:1em;
+    margin-left:1px;
+    vertical-align:-0.12em;
+    background:var(--green);
+    box-shadow:var(--glow);
+    animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
+  @media (prefers-reduced-motion: reduce){
+    .cursor{animation:none;}
+  }
+
+  .controls{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-top:14px;
+  }
+  .sizes{
+    margin:0;
+    padding:0;
+    border:0;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px 10px;
+  }
+  .sizes legend{
+    float:left;
+    padding:0;
+    margin-right:6px;
+  }
+  .sizes input{
+    position:absolute;
+    opacity:0;
+    width:1px;
+    height:1px;
+  }
+  .sizes label{
+    display:inline-block;
+    padding:0 8px;
+    border:1px solid var(--green-dim);
+    cursor:pointer;
+    user-select:none;
+  }
+  .sizes label:hover{border-color:var(--green);}
+  .sizes input:checked + label{
+    background:var(--green);
+    color:var(--term-bg);
+    text-shadow:none;
+    border-color:var(--green);
+  }
+  .sizes input:focus-visible + label{outline:2px solid var(--green);outline-offset:2px;}
+
+  .add{
+    align-self:flex-start;
+    font:inherit;
+    color:var(--green);
+    text-shadow:inherit;
+    background:transparent;
+    border:1px solid var(--green);
+    padding:4px 14px;
+    cursor:pointer;
+    letter-spacing:0.04em;
+  }
+  .add:hover{
+    background:var(--green);
+    color:var(--term-bg);
+    text-shadow:none;
+  }
+  .add:focus-visible,
+  .term-x:focus-visible{outline:2px solid var(--green);outline-offset:2px;}
 </style>
 </head>
 <body>
 
-<div class="poster" role="img" aria-label="Blein — drop 01. Hoodies, shirts, rings, and lube, on a neon industrial console backdrop.">
+<div class="poster">
   <img src="assets/backdrop.jpg" alt="" aria-hidden="true">
   <img src="assets/top-frame.png" alt="" aria-hidden="true">
   <img src="assets/bottom-frame.png" alt="" aria-hidden="true">
@@ -99,7 +257,236 @@
     <img class="tag-a" src="assets/bleed-loud.png" alt="" aria-hidden="true">
     <img class="tag-b" src="assets/exist-in-neon.png" alt="" aria-hidden="true">
   </div>
+
+  <button class="hot" data-product="hoodie" aria-label="View hoodie"
+    style="left:13.594%;top:21.389%;width:23.125%;height:57.778%"></button>
+  <button class="hot" data-product="hoodie" tabindex="-1" aria-hidden="true"
+    style="left:29.948%;top:22.222%;width:13.073%;height:6.481%"></button>
+
+  <button class="hot" data-product="shirt" aria-label="View shirt"
+    style="left:36.458%;top:29.630%;width:21.875%;height:45.093%"></button>
+  <button class="hot" data-product="shirt" tabindex="-1" aria-hidden="true"
+    style="left:50.625%;top:22.870%;width:9.740%;height:5.648%"></button>
+
+  <button class="hot" data-product="rings" aria-label="View rings"
+    style="left:59.167%;top:21.296%;width:23.646%;height:45.741%"></button>
+
+  <button class="hot" data-product="lube" aria-label="View lube"
+    style="left:82.813%;top:32.037%;width:12.135%;height:42.407%"></button>
 </div>
+
+<dialog class="term" id="term" aria-labelledby="term-path">
+  <div class="term-bar">
+    <span class="term-path" id="term-path">BLEIN://DROP_01</span>
+    <button class="term-x" id="term-x" aria-label="Close">[X]</button>
+  </div>
+  <div class="term-body" id="term-body">
+    <pre class="out" id="out" aria-live="polite"></pre>
+    <div class="controls" id="controls" hidden>
+      <fieldset class="sizes" id="sizes">
+        <legend>&gt; SIZE:</legend>
+      </fieldset>
+      <button class="add" id="add">[ ADD TO CART ]</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  /* edit product text, prices and sizes here */
+  const PRODUCTS = {
+    hoodie: {
+      name: 'HOODIE',
+      index: '01',
+      lines: [
+        'ACID YELLOW BODY. BLACK SLEEVES.',
+        'FIVE SPIKES ACROSS THE CHEST.',
+        'FRONT POCKET. MADE TO BE SEEN.',
+      ],
+      price: 'TBA',
+      sizes: ['S', 'M', 'L', 'XL'],
+    },
+    shirt: {
+      name: 'SHIRT',
+      index: '02',
+      lines: [
+        'BLACK TEE.',
+        'NEON GREEN TENDRILS DRIPPING DOWN THE BACK.',
+        'BLEED LOUD.',
+      ],
+      price: 'TBA',
+      sizes: ['S', 'M', 'L', 'XL'],
+    },
+    rings: {
+      name: 'RINGS',
+      index: '03',
+      lines: [
+        'FIVE TEXTURED SILICONE RINGS.',
+        'SPIKES, NUBS AND HORNS.',
+        'SOLD AS A SET.',
+      ],
+      price: 'TBA',
+      sizes: null,
+    },
+    lube: {
+      name: 'LUBE',
+      index: '04',
+      lines: [
+        'BODY-SAFE LUBRICANT.',
+        '30ML TRAVEL TUBE.',
+        'EXIST IN NEON.',
+      ],
+      price: 'TBA',
+      sizes: null,
+    },
+  };
+
+  const CHAR_MS = 16;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const term = document.getElementById('term');
+  const pathEl = document.getElementById('term-path');
+  const bodyEl = document.getElementById('term-body');
+  const out = document.getElementById('out');
+  const controls = document.getElementById('controls');
+  const sizesEl = document.getElementById('sizes');
+  const addBtn = document.getElementById('add');
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  cursor.setAttribute('aria-hidden', 'true');
+
+  const cart = [];
+  let current = null;
+  let typer = null;
+
+  function render(text){
+    out.textContent = text;
+    out.appendChild(cursor);
+  }
+
+  // types `text` onto the end of whatever is already printed
+  function type(text, done){
+    stopTyping();
+    const base = out.textContent;
+    if(reduceMotion){
+      render(base + text);
+      done && done();
+      return;
+    }
+    let i = 0;
+    typer = {
+      finish(){
+        clearInterval(typer.id);
+        typer = null;
+        render(base + text);
+        bodyEl.scrollTop = bodyEl.scrollHeight;
+        done && done();
+      },
+    };
+    typer.id = setInterval(() => {
+      i++;
+      render(base + text.slice(0, i));
+      bodyEl.scrollTop = bodyEl.scrollHeight;
+      if(i >= text.length) typer.finish();
+    }, CHAR_MS);
+  }
+
+  function stopTyping(){
+    if(typer){
+      clearInterval(typer.id);
+      typer = null;
+    }
+  }
+
+  function open(id){
+    const p = PRODUCTS[id];
+    if(!p) return;
+    current = id;
+    pathEl.textContent = 'BLEIN://DROP_01/' + p.name;
+    render('');
+    controls.hidden = true;
+
+    sizesEl.querySelectorAll('input, label').forEach(el => el.remove());
+    if(p.sizes){
+      sizesEl.hidden = false;
+      p.sizes.forEach(s => {
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'size';
+        input.value = s;
+        input.id = 'size-' + s;
+        const label = document.createElement('label');
+        label.htmlFor = input.id;
+        label.textContent = s;
+        sizesEl.append(input, label);
+      });
+    } else {
+      sizesEl.hidden = true;
+    }
+
+    const text = [
+      '> ACCESSING BLEIN://DROP_01/' + p.name + ' ...',
+      '> ITEM ' + p.index + ' // ' + p.name,
+      '',
+      ...p.lines,
+      '',
+      ...(p.sizes ? [] : ['> SIZE: ONE SIZE']),
+      '> PRICE: ' + p.price,
+    ].join('\n');
+
+    if(!term.open) term.showModal();
+    type(text, () => {
+      controls.hidden = false;
+      const first = sizesEl.querySelector('input') || addBtn;
+      first.focus({preventScroll:true});
+    });
+  }
+
+  addBtn.addEventListener('click', () => {
+    const p = PRODUCTS[current];
+    if(!p) return;
+    let size = null;
+    if(p.sizes){
+      const picked = sizesEl.querySelector('input:checked');
+      if(!picked){
+        type('\n\n> ERROR: SELECT A SIZE FIRST');
+        return;
+      }
+      size = picked.value;
+    }
+    cart.push({id: current, size});
+    const n = cart.length;
+    type(
+      '\n\n> ADDED TO CART: ' + p.name + (size ? ' / ' + size : '') +
+      '\n> CART: ' + n + (n === 1 ? ' ITEM' : ' ITEMS') +
+      '\n> CHECKOUT GOES LIVE WITH THE SHOPIFY STORE.'
+    );
+  });
+
+  // clicking the text or pressing a key while it types finishes the line
+  bodyEl.addEventListener('click', e => {
+    if(typer && !e.target.closest('.controls')) typer.finish();
+  });
+  term.addEventListener('keydown', e => {
+    if(typer && e.key !== 'Escape' && e.key !== 'Tab'){
+      e.preventDefault();
+      typer.finish();
+    }
+  });
+
+  document.getElementById('term-x').addEventListener('click', () => term.close());
+  // a click on the dialog element itself (not its contents) is a backdrop click
+  term.addEventListener('click', e => { if(e.target === term) term.close(); });
+  term.addEventListener('close', () => { stopTyping(); current = null; });
+
+  // light up every hit area of the same product together
+  document.querySelectorAll('.hot').forEach(btn => {
+    const id = btn.dataset.product;
+    const group = document.querySelectorAll('.hot[data-product="' + id + '"]');
+    btn.addEventListener('click', () => open(id));
+    btn.addEventListener('pointerenter', () => group.forEach(b => b.classList.add('lit')));
+    btn.addEventListener('pointerleave', () => group.forEach(b => b.classList.remove('lit')));
+  });
+</script>
 
 </body>
 </html>
