@@ -48,20 +48,17 @@
     display:block;
   }
 
-  /* product layers snap between turned angles instead of easing smoothly,
-     like a display turntable indexing between fixed positions. perspective()
-     puts the vanishing point at each product's own transform-origin, so they
-     turn in place instead of drifting toward the canvas center, and it scales
-     with the canvas width so the turn looks the same at any screen size. */
-  .spin-hoodie{transform-origin:28.3% 50.3%;animation:turn-snap 4s infinite;}
-  .spin-shirt{transform-origin:46.9% 52.3%;animation:turn-snap 4s infinite;animation-delay:-1.3s;}
-  .spin-rings{transform-origin:70.9% 45%;animation:turn-snap 4s infinite;animation-delay:-2.6s;}
-  @keyframes turn-snap{
-    0%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(0deg);animation-timing-function:steps(1);}
-    25%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(-14deg);animation-timing-function:steps(1);}
-    50%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(0deg);animation-timing-function:steps(1);}
-    75%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(14deg);animation-timing-function:steps(1);}
-    100%{transform:perspective(calc(var(--pw) * 1.4)) rotateY(0deg);}
+  /* product layers snap between tilted angles instead of easing smoothly,
+     rotating clockwise and counterclockwise around each product's own center */
+  .spin-hoodie{transform-origin:28.3% 50.3%;animation:tilt-snap 4s infinite;}
+  .spin-shirt{transform-origin:46.9% 52.3%;animation:tilt-snap 4s infinite;animation-delay:-1.3s;}
+  .spin-rings{transform-origin:70.9% 45%;animation:tilt-snap 4s infinite;animation-delay:-2.6s;}
+  @keyframes tilt-snap{
+    0%{transform:rotate(0deg);animation-timing-function:steps(1);}
+    25%{transform:rotate(-8deg);animation-timing-function:steps(1);}
+    50%{transform:rotate(0deg);animation-timing-function:steps(1);}
+    75%{transform:rotate(8deg);animation-timing-function:steps(1);}
+    100%{transform:rotate(0deg);}
   }
   @media (prefers-reduced-motion: reduce){
     .spin-hoodie, .spin-shirt, .spin-rings{animation:none;}
