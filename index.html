@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blein</title>
+<meta name="description" content="Blein — drop 01. Hoodies, shirts, rings and lube.">
+<style>
+  :root{
+    --bg:#050506;
+    --ink:#c9cad0;
+    --ink-faint:#5b5c63;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:system-ui,sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding-inline:max(12px, env(safe-area-inset-left,0px)) max(12px, env(safe-area-inset-right,0px));
+    padding-block:clamp(12px,3vw,32px);
+    gap:14px;
+    min-height:100vh;
+  }
+
+  .poster{
+    position:relative;
+    width:100%;
+    max-width:1600px;
+    aspect-ratio:1920/1080;
+    perspective:1400px;
+  }
+  .poster img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+
+  /* product layers snap between turned angles instead of easing smoothly,
+     like a display turntable indexing between fixed positions */
+  .spin-hoodie{transform-origin:28.3% 50.3%;animation:turn-snap 4s infinite;}
+  .spin-shirt{transform-origin:46.9% 52.3%;animation:turn-snap 4s infinite;animation-delay:-1.3s;}
+  .spin-rings{transform-origin:70.9% 45%;animation:turn-snap 4s infinite;animation-delay:-2.6s;}
+  @keyframes turn-snap{
+    0%{transform:rotateY(0deg);animation-timing-function:steps(1);}
+    25%{transform:rotateY(-14deg);animation-timing-function:steps(1);}
+    50%{transform:rotateY(0deg);animation-timing-function:steps(1);}
+    75%{transform:rotateY(14deg);animation-timing-function:steps(1);}
+    100%{transform:rotateY(0deg);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .spin-hoodie, .spin-shirt, .spin-rings{animation:none;}
+  }
+
+  /* the screen rectangle in the bottom-frame art sits at native px
+     (357,889)-(1012,1051) on the 1920x1080 canvas. the clip lives on a
+     stationary wrapper so the window never moves, while each tagline slides
+     under it for one full sweep per turn. */
+  .screen-clip{
+    position:absolute;
+    inset:0;
+    clip-path:inset(82.315% 47.292% 2.685% 18.594%);
+  }
+  .tag-a{animation:scroll-a 6s linear infinite;}
+  .tag-b{animation:scroll-b 6s linear infinite;}
+  @keyframes scroll-a{
+    0%{transform:translateX(-40%);}
+    48%{transform:translateX(40%);}
+    100%{transform:translateX(40%);}
+  }
+  @keyframes scroll-b{
+    0%,50%{transform:translateX(-40%);}
+    98%{transform:translateX(40%);}
+    100%{transform:translateX(40%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .tag-a, .tag-b{animation:none;}
+    .tag-a{transform:translateX(0%);}
+    .tag-b{transform:translateX(40%);}
+  }
+
+  .note{
+    margin:0;
+    font-size:0.8rem;
+    letter-spacing:0.03em;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<div class="poster" role="img" aria-label="Blein — drop 01. Hoodies, shirts, rings, and lube, on a neon industrial console backdrop.">
+  <img src="assets/backdrop.jpg" alt="" aria-hidden="true">
+  <img src="assets/top-frame.png" alt="" aria-hidden="true">
+  <img src="assets/bottom-frame.png" alt="" aria-hidden="true">
+  <img src="assets/lube.png" alt="" aria-hidden="true">
+  <img src="assets/nav-buttons.png" alt="" aria-hidden="true">
+  <img class="spin-hoodie" src="assets/hoodies.png" alt="" aria-hidden="true">
+  <img class="spin-shirt" src="assets/shirts.png" alt="" aria-hidden="true">
+  <img class="spin-rings" src="assets/rings.png" alt="" aria-hidden="true">
+  <div class="screen-clip">
+    <img class="tag-a" src="assets/bleed-loud.png" alt="" aria-hidden="true">
+    <img class="tag-b" src="assets/exist-in-neon.png" alt="" aria-hidden="true">
+  </div>
+</div>
+
+<p class="note">Shop &amp; checkout launching soon on Shopify</p>
+
+</body>
+</html>
