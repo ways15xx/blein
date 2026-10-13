@@ -8,29 +8,27 @@
 <style>
   :root{
     --bg:#050506;
-    --ink:#c9cad0;
-    --ink-faint:#5b5c63;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;}
-  body{
+  html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
     background:var(--bg);
-    color:var(--ink);
-    font-family:system-ui,sans-serif;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding-inline:max(12px, env(safe-area-inset-left,0px)) max(12px, env(safe-area-inset-right,0px));
-    padding-block:clamp(12px,3vw,32px);
-    gap:14px;
-    min-height:100vh;
   }
 
+  /* cover the viewport like a background image: keep the 16:9 canvas so every
+     layer stays aligned, scale it until both dimensions fill the window, and
+     crop whatever spills past the edges */
   .poster{
-    position:relative;
-    width:100%;
-    max-width:1600px;
-    aspect-ratio:1920/1080;
+    position:fixed;
+    left:50%;
+    top:50%;
+    width:max(100vw, calc(100vh * 16 / 9));
+    height:max(100vh, calc(100vw * 9 / 16));
+    width:max(100vw, calc(100dvh * 16 / 9));
+    height:max(100dvh, calc(100vw * 9 / 16));
+    transform:translate(-50%, -50%);
     perspective:1400px;
   }
   .poster img{
@@ -84,13 +82,6 @@
     .tag-b{transform:translateX(40%);}
   }
 
-  .note{
-    margin:0;
-    font-size:0.8rem;
-    letter-spacing:0.03em;
-    color:var(--ink-faint);
-    text-align:center;
-  }
 </style>
 </head>
 <body>
@@ -109,8 +100,6 @@
     <img class="tag-b" src="assets/exist-in-neon.png" alt="" aria-hidden="true">
   </div>
 </div>
-
-<p class="note">Shop &amp; checkout launching soon on Shopify</p>
 
 </body>
 </html>
